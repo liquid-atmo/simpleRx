@@ -1,0 +1,22 @@
+<body>
+    <ul id="events"></ul>
+    <script type="application/javascript">
+        function add(message) {
+            const el = document.createElement("li");
+            el.innerHTML = message;
+            document.getElementById("events").appendChild(el);
+        }
+
+        var eventSource = new EventSource("/temperature-stream");
+
+        eventSource.onmessage = e => {
+            const t = JSON.parse(e.data);
+            console.log("t: " + t);
+            const fixed = Number(t.temperature).toFixed(2);
+            console.log(fixed);
+            add('Temperature: ' + fixed + ' C');
+        }
+        eventSource.onopen = e => add('Connection opened');
+        eventSource.onerror = e => add('Connection closed');
+    </script>
+</body>
